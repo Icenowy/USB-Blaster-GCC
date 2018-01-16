@@ -17,6 +17,10 @@ SIZE := $(CROSS_COMPILE)size
 CFLAGS := -ffreestanding -mcpu=cortex-m3 -mthumb -mfloat-abi=soft -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD
 CFLAGS += -Isrc -Idrv -Isys -Iusb -Icmsis/inc -Istdperiph/inc -Ifsusb/inc -Icmsis/stm32/inc
 
+PLAT ?= BLUEPILL
+
+CFLAGS += -D$(PLAT)
+
 usb-blaster.axf: $(startup-object) $(drv-objects) $(sys-objects) $(usb-objects) $(src-objects) $(stdperiph-objects) $(fsusb-objects)
 	$(LD) -T stm32.ld $^ -o $@
 
