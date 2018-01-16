@@ -57,14 +57,20 @@ static uint16_t s_led_cycle_cnt;
 /*-----------------------------------*/
 
 // 开/关LED
+#if defined(BLUEPILL)
 #define LED_ON()        GPIOC->BSRR = GPIO_Pin_13
 #define LED_OFF()       GPIOC->BRR = GPIO_Pin_13
+#elif defined(STLINK_V2_CLONE_DONGLE)
+#define LED_ON()	GPIOA->BSRR = GPIO_Pin_9
+#define LED_OFF()	GPIOA->BRR = GPIO_Pin_9
+#endif
 
 // LED端口初始化
 static void led_gpio_config(void)
 {
     GPIO_InitTypeDef GPIO_InitStructure;
 
+#if defined(BLUEPILL)
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
 
     // GPIOA Configuration: Pin 13
@@ -72,6 +78,15 @@ static void led_gpio_config(void)
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_Init(GPIOC, &GPIO_InitStructure);
+#elif defined(STLINK_V2_CLONE_DONGLE)
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+
+    // GPIOA Configuration: Pin 9
+    GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_9;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+#endif
 }
 
 /*-----------------------------------*/

@@ -36,6 +36,7 @@ SOFTWARE.
 // uncomment to enable OE/LED
 #define BLASTER_OE_LED_EN
 
+#if defined(BLUEPILL)
 // TCK: PB3
 #define TCK_OUT(d)      PBO(3) = (d)
 #define TCK_0()         TCK_OUT(0)
@@ -53,6 +54,29 @@ SOFTWARE.
 #ifdef BLASTER_OE_LED_EN
 // OE/LED: PA8
 #define OE_OUT(d)       PAO(8) = (d)
+#endif
+
+#elif defined(STLINK_V2_CLONE_DONGLE)
+// TCK: PA5
+#define TCK_OUT(d)      PAO(5) = (d)
+#define TCK_0()         TCK_OUT(0)
+#define TCK_1()         TCK_OUT(1)
+
+// TDO: PB14
+#define TDO_IN()        PBI(14)
+
+// TDI: PB8
+#define TDI_OUT(d)      PBO(8) = (d)
+
+// TMS: PB6
+#define TMS_OUT(d)      PBO(6) = (d)
+
+#ifdef BLASTER_OE_LED_EN
+// OE/LED: PA8
+#define OE_OUT(d)       PAO(8) = (d)
+#endif
+#else
+#error Unknown platform
 #endif
 
 #ifdef BLASTER_AS_MODE_EN
@@ -75,6 +99,7 @@ void bport_init(void)
 
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
 
+#if defined(BLUEPILL)
     // GPIO Out Configuration: TCK(PB3), TDI(PB5), TMS(PB6)
     GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_3 | GPIO_Pin_5 | GPIO_Pin_6;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
@@ -85,6 +110,23 @@ void bport_init(void)
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
     GPIO_Init(GPIOB, &GPIO_InitStructure);
+#elif defined(STLINK_V2_CLONE_DONGLE)
+    // GPIO Out Configuration: TCK(PA5), TDI(PB8), TMS(PB6)
+    GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_8 | GPIO_Pin_6;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+    GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_5;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+    // GPIO In Configuration: TDO(PB14)
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_14;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
+    GPIO_Init(GPIOB, &GPIO_InitStructure);
+#endif
 
 #ifdef BLASTER_OE_LED_EN
     // led(OE) pin already init in led.c
