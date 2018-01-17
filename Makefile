@@ -14,8 +14,10 @@ OBJDUMP := $(CROSS_COMPILE)objdump
 OBJCOPY := $(CROSS_COMPILE)objcopy
 SIZE := $(CROSS_COMPILE)size
 
-CFLAGS := -ffreestanding -mcpu=cortex-m3 -mthumb -mfloat-abi=soft -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -O2
+CFLAGS := -ffreestanding -mcpu=cortex-m3 -mthumb -mfloat-abi=soft -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -O2 -flto
 CFLAGS += -Isrc -Idrv -Isys -Iusb -Icmsis/inc -Istdperiph/inc -Ifsusb/inc -Icmsis/stm32/inc
+
+CCLDFLAGS := -Wl,-T -Wl,stm32.ld -flto -ffreestanding -nostdlib
 
 # Available plats: BLUEPILL, STLINK_V2_CLONE_DONGLE
 PLAT ?= BLUEPILL
@@ -23,7 +25,7 @@ PLAT ?= BLUEPILL
 CFLAGS += -D$(PLAT)
 
 usb-blaster.axf: $(startup-object) $(drv-objects) $(sys-objects) $(usb-objects) $(src-objects) $(stdperiph-objects) $(fsusb-objects)
-	$(LD) -T stm32.ld $^ -o $@
+	$(CC) $(CCLDFLAGS) $^ -o $@
 
 %.hex: %.axf
 	$(OBJCOPY) -O ihex $< $@
