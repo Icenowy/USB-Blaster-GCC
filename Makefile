@@ -19,7 +19,7 @@ CFLAGS += -Isrc -Idrv -Isys -Iusb -Icmsis/inc -Istdperiph/inc -Ifsusb/inc -Icmsi
 
 CCLDFLAGS := -Wl,-T -Wl,stm32.ld -flto -ffreestanding -nostdlib
 
-# Available plats: BLUEPILL, STLINK_V2_CLONE_DONGLE
+# Available plats: BLUEPILL, STLINK_V2_CLONE_DONGLE, JTAGPILL
 PLAT ?= BLUEPILL
 
 CFLAGS += -D$(PLAT)

@@ -60,6 +60,9 @@ static uint16_t s_led_cycle_cnt;
 #if defined(BLUEPILL)
 #define LED_ON()        GPIOC->BSRR = GPIO_Pin_13
 #define LED_OFF()       GPIOC->BRR = GPIO_Pin_13
+#elif defined(JTAGPILL)
+#define LED_ON()	GPIOB->BSRR = GPIO_Pin_8
+#define LED_OFF()	GPIOB->BRR = GPIO_Pin_8
 #elif defined(STLINK_V2_CLONE_DONGLE)
 #define LED_ON()	GPIOA->BSRR = GPIO_Pin_9
 #define LED_OFF()	GPIOA->BRR = GPIO_Pin_9

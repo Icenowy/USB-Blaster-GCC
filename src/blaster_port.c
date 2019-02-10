@@ -56,6 +56,26 @@ SOFTWARE.
 #define OE_OUT(d)       PAO(8) = (d)
 #endif
 
+#elif defined(JTAGPILL)
+// TCK: PA14
+#define TCK_OUT(d)      PAO(14) = (d)
+#define TCK_0()         TCK_OUT(0)
+#define TCK_1()         TCK_OUT(1)
+
+// TDO: PB3
+#define TDO_IN()        PBI(3)
+
+// TDI: PA15
+#define TDI_OUT(d)      PAO(15) = (d)
+
+// TMS: PA13
+#define TMS_OUT(d)      PAO(13) = (d)
+
+#ifdef BLASTER_OE_LED_EN
+// OE/LED: PB8
+#define OE_OUT(d)       PBO(8) = (d)
+#endif
+
 #elif defined(STLINK_V2_CLONE_DONGLE)
 // TCK: PA5
 #define TCK_OUT(d)      PAO(5) = (d)
@@ -108,6 +128,17 @@ void bport_init(void)
 
     // GPIO In Configuration: TDO(PB4)
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
+    GPIO_Init(GPIOB, &GPIO_InitStructure);
+#elif defined(JTAGPILL)
+    // GPIO Out Configuration: TCK(PA14), TDI(PA15), TMS(PA13)
+    GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+    // GPIO In Configuration: TDO(PB3)
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
     GPIO_Init(GPIOB, &GPIO_InitStructure);
 #elif defined(STLINK_V2_CLONE_DONGLE)
