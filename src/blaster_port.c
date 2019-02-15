@@ -132,12 +132,16 @@ void bport_init(void)
     GPIO_Init(GPIOB, &GPIO_InitStructure);
 #elif defined(JTAGPILL)
     // GPIO Out Configuration: TCK(PA14), TDI(PA15), TMS(PA13)
+    GPIO_ResetBits(GPIOA, GPIO_Pin_13 | GPIO_Pin_1 | GPIO_Pin_15);
+    GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable,ENABLE);
     GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
     // GPIO In Configuration: TDO(PB3)
+    GPIO_ResetBits(GPIOB, GPIO_Pin_3);
+    GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable,ENABLE);
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
     GPIO_Init(GPIOB, &GPIO_InitStructure);
